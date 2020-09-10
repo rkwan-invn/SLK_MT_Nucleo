@@ -1,8 +1,6 @@
-8/27/2020 Rev 1.0
--Release based on Nucleo Board with config files for Ofilm Auto Plastic project
+9/8/2020 Rev 1.0
+-Release based on Nucleo Board with config files for Generic 550um Glass, Glue: NCA 3280
 
-6/19/2020 OfilmAuto Rev 0.1
--First Evaluation Release based on Nucleo Board
 
 Note:
 =====

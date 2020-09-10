@@ -10,9 +10,6 @@
 #include <sstream>
 #include <numeric>
 
-
-//#include "ModuleTestDLL_Defs.h"
-
 #pragma once
 
 #define MTDLL_OK				0
@@ -252,7 +249,7 @@ int MTDLLAPI MT_Chk_ASICID(int PortCnt, int DieIDout[], int WaferIDout[], char *
 	//			MTDLL_ERROR - fail
 int MTDLLAPI MT_Chk_Temp(int PortCnt);
 
-	//@brief	IDD Test (FOR Nucleo ONLY)
+	//@brief	IDD Test 
 	//@detail	Perform power rail current test
 	//@param	PortCnt - number of ports / testers connected
 	//@retval	MTDLL_OK - success

@@ -15,9 +15,10 @@ namespace fs = std::experimental::filesystem;
 #include "tdk_mpt.h"
 
 
-//#define FULLYAUTO
-
+// For storing the info of the config folder
 #define CFGFILEPATH "CfgPathInfo.txt"
+
+// For storing the info of the test station number to be run
 #define TSTSTATIONFILE "CurTestNo.txt"
 
 unsigned char CfgFileRootPath[MTSTRINGMAX];
@@ -46,12 +47,15 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	unsigned char INVN_DataDir[INVS_MAX_DIR_PATH];
 	unsigned char SN[MTSTRINGMAX];
 	
+	// For Dummy Serial Number to be retrieved from external barcode tool or so
+	// to be assigned to the SN variable.
 	strcpy_s((char*)SN, MTSTRINGMAX, "8SJYAAE0023HJ1KSYMDSSSS");
 
 	INVS_TEST_CASE TestCase;
 	int TEST_Staion_No;
 
 	// =========== Check Cfg File Path ==============
+	// Current Default: ..\\fpsys_python
 
 	CfgFilePath_Check(CfgFileRootPath);
 
@@ -62,9 +66,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		return false;
 	}
 
-	// =========== User to specify TEST Station Number ===================
-//	TEST_Staion_No = 7;
-
+	// =========== Check Current Test Station Number ==============
 	std::ifstream TstNoFile;
 
 	TstNoFile.open(TSTSTATIONFILE);
@@ -78,7 +80,10 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		return false;
 	}
 	TstNoFile.close();
-	
+
+	//  User may hard-code the TEST Station Number directly
+	//	TEST_Staion_No = 4;
+
 	// ===================================================================
 
 	switch (TEST_Staion_No) {
@@ -116,21 +121,23 @@ int _tmain(int argc, _TCHAR* argv[]) {
 			return -1;
 	}
 
+	// =========== Test Result Pointer ==============
 	INVS_MPT_RESULT TestRes = {};
 	INVS_MPT_RESULT *pTestRes;
 	pTestRes = &TestRes;
 
-	// Make Data Directory
+	// =========== Make Data Directory depending on Test Case ==============
 	std::string INVNDirstr((char*)INVN_DataDir);
 	char MakeINVNDir[MTSTRINGMAX];
 	sprintf_s(MakeINVNDir, MTSTRINGMAX, "mkdir %s", INVNDirstr.c_str());
 	system(MakeINVNDir);	
 
 
-	// ============ Main INVS Test ======================================
+	// ============ Main INVS Test Function==============================
 	rc = INVS_ExecuteTestCase(INVN_DataDir, SN, TestCase, pTestRes);
 	// ==================================================================
 
+	// ============ Test Result Output ==============================
 	PassFailThisRun = ((rc == INVS_SUCCESS) ? "Pass" : "Fail");
 	std::cout << "Pass Fail for this run is --> " << PassFailThisRun << std::endl;
 	std::cout << "pDetailedResult -> sn is " << pTestRes->sn << std::endl;
