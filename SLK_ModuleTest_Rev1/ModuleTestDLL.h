@@ -44,6 +44,7 @@
 #define TXRXFILE ROOTDIR "\\System\\TxRxPatterns\\BF3x3FullRx.csv"
 #define TXRXFLEXFILE ROOTDIR "\\System\\TxRxPatterns\\BF3x3TX_1RX.csv"
 #define GOLDENTRIMFILE ROOTDIR "\\System\\FP001\\GoldenTrim_A1A1.csv"
+#define GOLDENTRIMFILE2 ROOTDIR "\\System\\FP001\\GoldenTrim_LabView.csv"
 #define FLATCOMPMAP ROOTDIR "\\System\\FP001\\CompMap-105.csv"
 
 #define OTPMAPFILE ROOTDIR "\\System\\FP001\\DE-000778 FP001_OTPMap_v1.3.csv"

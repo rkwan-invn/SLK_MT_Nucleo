@@ -14,7 +14,7 @@
 
  // SLK MT SW version 
 #define SLKMTSWVERSIONMAJOR	1
-#define SLKMTSWVERSIONMINOR	0
+#define SLKMTSWVERSIONMINOR	1
 
 //#include "resource.h"
 //#pragma comment(lib, "user32")
@@ -92,9 +92,9 @@ void drawImage(HDC screen)
 wchar_t * char2wchar(const char* cchar)
 {
 	wchar_t *m_wchar;
-	int len = MultiByteToWideChar(CP_ACP, 0, cchar, strlen(cchar), NULL, 0);
+	int len = MultiByteToWideChar(CP_ACP, 0, cchar, (int)strlen(cchar), NULL, 0);
 	m_wchar = new wchar_t[len + 1];
-	MultiByteToWideChar(CP_ACP, 0, cchar, strlen(cchar), m_wchar, len);
+	MultiByteToWideChar(CP_ACP, 0, cchar, (int)strlen(cchar), m_wchar, len);
 	m_wchar[len] = '\0';
 	return m_wchar;
 }
@@ -193,7 +193,7 @@ LRESULT CALLBACK wndProc(HWND wnd, UINT msg, WPARAM w, LPARAM l)
 LRESULT CALLBACK imgWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int    wmID, wmEvent;
-	HDC     hdc;
+	//HDC     hdc;
 	HWND    hReadyButton;
 
 	switch (message) {
@@ -315,7 +315,7 @@ int	INVS_ExecuteTestCase(unsigned char  *invsBase, unsigned char *sn, INVS_TEST_
 	uint32_t MTDLLVer;
 
 	int RunNum;
-	int ALLRUNNUM;
+	//int ALLRUNNUM;
 	char ContRun;
 	int PassFailThisRun[MTSESSIONMAX];
 	int PassFailOverall[MTSESSIONMAX];	std::fill(PassFailOverall, PassFailOverall + MTSESSIONMAX, 0);
@@ -537,7 +537,7 @@ int	INVS_ExecuteTestCase(unsigned char  *invsBase, unsigned char *sn, INVS_TEST_
 	// ===== Power on Nucleo in sorted order =====
 	if ((rc = MT_Init(PortCnt)) != MTDLL_OK){ printf("MT Init error\r\n"); return -1; }
 	if ((rc = MT_Chk_HW(COMPORTsorted, PortCnt, COMPORTout)) != MTDLL_OK)	{ printf("MT ChkHW error\r\n");		return -1; }
-	for (int i = 0; i < PortCnt; i++){ printf("COM Port Output from MT_Chk_HW, Port%d: %d\n", i, COMPORTout[i]); }
+	for (int i = 0; i < PortCnt; i++){ printf("COM Port Output from MT_Chk_HW, Port%d: %lld\n", i, COMPORTout[i]); }
 	// ===== Power off Nucleo just in case it was not shut down properly =====
 	if ((rc = MT_PowerOFFDUT(PortCnt)) != MTDLL_OK) { printf("MT Power ON DUT error\r\n");		return -1; }
 	timefile << "Test Setup	"; TIMEREND;
@@ -656,16 +656,26 @@ int	INVS_ExecuteTestCase(unsigned char  *invsBase, unsigned char *sn, INVS_TEST_
 		if ((rc = MT_LoadDMP(PortCnt)) != MTDLL_OK) { printf("MT Load DMP error\r\n");		return -1; }
 		timefile << "Load DMP	"; TIMEREND;
 
-		//===== IDD check =====
-		TIMERSTART;
-		if ((rc = MT_Chk_IDD(PortCnt)) != MTDLL_OK) { printf("MT IDD Chk error\r\n");		return -1; }
-		timefile << "IDD Check	"; TIMEREND;
-
 		//===== Encryption Chk =====
 		TIMERSTART;
 		if ((rc = MT_Chk_Encrypt(PortCnt)) != MTDLL_OK) { printf("MT Encryption Chk error\r\n");		return -1; }
 		timefile << "Encryption Chk	"; TIMEREND;
+		
+		// ===== Temp Chk =====
+		TIMERSTART;
+		if ((rc = MT_Chk_Temp(PortCnt)) != MTDLL_OK) { printf("MT Temp Chk error\r\n");		return -1; }
+		timefile << "Temp Chk	"; TIMEREND;
 
+		//===== IDD check =====
+		TIMERSTART;
+		if ((rc = MT_Chk_IDD(PortCnt)) != MTDLL_OK) { printf("MT IDD Chk error\r\n");		return -1; }
+		timefile << "IDD Check	"; TIMEREND;
+#if 0
+		//===== Encryption Chk =====
+		TIMERSTART;
+		if ((rc = MT_Chk_Encrypt(PortCnt)) != MTDLL_OK) { printf("MT Encryption Chk error\r\n");		return -1; }
+		timefile << "Encryption Chk	"; TIMEREND;
+#endif // 0
 		// Exit Test if EncChk fails
 		int PassFail_EncChk[MTSESSIONMAX];
 
@@ -695,12 +705,12 @@ int	INVS_ExecuteTestCase(unsigned char  *invsBase, unsigned char *sn, INVS_TEST_
 		TIMERSTART;
 		if ((rc = MT_AirImageScan(PortCnt)) != MTDLL_OK) { printf("MT Gain Only Image Scan error\r\n");		return -1; }
 		timefile << "Air Image	"; TIMEREND;
-
+#if 0
 		// ===== Temp Chk =====
 		TIMERSTART;
 		if ((rc = MT_Chk_Temp(PortCnt)) != MTDLL_OK) { printf("MT Temp Chk error\r\n");		return -1; }
 		timefile << "Temp Chk	"; TIMEREND;
-
+#endif // 0
 #ifdef FULLYAUTO
 		TIMERSTART;
 		std::cout << "Target Loaded by GPIO controlled fixture" << std::endl;
